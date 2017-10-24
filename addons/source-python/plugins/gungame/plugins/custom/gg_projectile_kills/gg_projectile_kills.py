@@ -14,9 +14,11 @@ from entities import TakeDamageInfo
 from entities.entity import Entity
 from entities.hooks import EntityCondition, EntityPreHook
 from memory import make_object
+from weapons.manager import weapon_manager
 
 # GunGame
 from gungame.core.paths import GUNGAME_DATA_PATH
+from gungame.core.players.dictionary import player_dictionary
 from gungame.core.plugins.manager import gg_plugin_manager
 from gungame.core.status import GunGameMatchStatus, GunGameStatus
 
@@ -50,9 +52,16 @@ def _pre_take_damage(stack_data):
     if victim.team == attacker.team and 'gg_ffa' not in gg_plugin_manager:
         return
 
-    if Entity(take_damage_info.weapon).classname not in _projectile_weapons:
+    classname = Entity(take_damage_info.weapon).classname
+    if classname not in _projectile_weapons:
+        return
+
+    if 'gg_teamplay' in gg_plugin_manager and victim.team == attacker.team:
+        return
+
+    attacker = player_dictionary.from_index(attacker.index)
+    if weapon_manager[classname].basename != attacker.level_weapon:
         return
 
     victim.health = 1
     victim.armor = 0
-    take_damage_info.damage = max(1, take_damage_info.damage)
