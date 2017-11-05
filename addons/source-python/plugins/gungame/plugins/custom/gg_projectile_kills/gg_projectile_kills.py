@@ -49,8 +49,9 @@ def _pre_take_damage(stack_data):
         return
 
     victim = make_object(Entity, stack_data[0])
-    if victim.team == attacker.team and 'gg_ffa' not in gg_plugin_manager:
-        return
+    if victim.team_index == attacker.team_index:
+        if 'gg_ffa' not in gg_plugin_manager:
+            return
 
     classname = Entity(take_damage_info.weapon).classname
     if classname not in _projectile_weapons:
