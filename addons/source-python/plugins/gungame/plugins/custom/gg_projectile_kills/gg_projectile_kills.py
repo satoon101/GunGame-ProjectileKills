@@ -5,11 +5,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site-package
-from configobj import ConfigObj
-
 # Source.Python
-from core import GAME_NAME
 from entities import TakeDamageInfo
 from entities.entity import Entity
 from entities.hooks import EntityCondition, EntityPreHook
@@ -17,20 +13,18 @@ from memory import make_object
 from weapons.manager import weapon_manager
 
 # GunGame
-from gungame.core.paths import GUNGAME_DATA_PATH
 from gungame.core.players.dictionary import player_dictionary
 from gungame.core.plugins.manager import gg_plugin_manager
 from gungame.core.status import GunGameMatchStatus, GunGameStatus
-
-# Plugin
-from .info import info
+from gungame.core.weapons.groups import grenade_weapons
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_ini_file = GUNGAME_DATA_PATH / info.name + '.ini'
-_projectile_weapons = ConfigObj(_ini_file).get(GAME_NAME, [])
+_projectile_weapons = {
+    k for k, v in weapon_manager.projectiles.items() if v in grenade_weapons
+}
 
 
 # =============================================================================
