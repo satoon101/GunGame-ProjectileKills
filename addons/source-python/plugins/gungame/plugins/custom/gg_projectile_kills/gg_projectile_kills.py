@@ -51,9 +51,6 @@ def _pre_take_damage(stack_data):
     if classname not in _projectile_weapons:
         return
 
-    if 'gg_teamplay' in gg_plugin_manager and victim.team_index == attacker.team_index:
-        return
-
     attacker = player_dictionary.from_index(attacker.index)
     if weapon_manager[classname].basename != attacker.level_weapon:
         return
