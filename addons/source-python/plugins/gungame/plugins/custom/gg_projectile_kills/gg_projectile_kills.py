@@ -18,7 +18,6 @@ from gungame.core.plugins.manager import gg_plugin_manager
 from gungame.core.status import GunGameMatchStatus, GunGameStatus
 from gungame.core.weapons.groups import grenade_weapons
 
-
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
@@ -30,8 +29,8 @@ _projectile_weapons = {
 # =============================================================================
 # >> HOOKED FUNCTIONS
 # =============================================================================
-@EntityPreHook(EntityCondition.is_bot_player, 'on_take_damage')
-@EntityPreHook(EntityCondition.is_human_player, 'on_take_damage')
+@EntityPreHook(EntityCondition.is_bot_player, "on_take_damage")
+@EntityPreHook(EntityCondition.is_human_player, "on_take_damage")
 def _pre_take_damage(stack_data):
     """Set player health/armor to allow projectile kill."""
     if GunGameStatus.MATCH is not GunGameMatchStatus.ACTIVE:
@@ -39,13 +38,15 @@ def _pre_take_damage(stack_data):
 
     take_damage_info = make_object(TakeDamageInfo, stack_data[1])
     attacker = Entity(take_damage_info.attacker)
-    if attacker.classname != 'player':
+    if attacker.classname != "player":
         return
 
     victim = make_object(Entity, stack_data[0])
-    if victim.team_index == attacker.team_index:
-        if 'gg_ffa' not in gg_plugin_manager:
-            return
+    if (
+        victim.team_index == attacker.team_index and
+        "gg_ffa" not in gg_plugin_manager
+    ):
+        return
 
     classname = Entity(take_damage_info.weapon).classname
     if classname not in _projectile_weapons:
