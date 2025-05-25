@@ -15,7 +15,11 @@ from weapons.manager import weapon_manager
 # GunGame
 from gungame.core.players.dictionary import player_dictionary
 from gungame.core.plugins.manager import gg_plugin_manager
-from gungame.core.status import GunGameMatchStatus, GunGameStatus
+from gungame.core.status import (
+    GunGameMatchStatus,
+    GunGameRoundStatus,
+    GunGameStatus,
+)
 from gungame.core.weapons.groups import grenade_weapons
 
 # =============================================================================
@@ -33,7 +37,10 @@ _projectile_weapons = {
 @EntityPreHook(EntityCondition.is_human_player, "on_take_damage")
 def _pre_take_damage(stack_data):
     """Set player health/armor to allow projectile kill."""
-    if GunGameStatus.MATCH is not GunGameMatchStatus.ACTIVE:
+    if (
+        GunGameStatus.MATCH is not GunGameMatchStatus.ACTIVE or
+        GunGameStatus.ROUND is GunGameRoundStatus.INACTIVE
+    ):
         return
 
     take_damage_info = make_object(TakeDamageInfo, stack_data[1])
